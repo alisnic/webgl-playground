@@ -8,11 +8,20 @@
 			canvas{border:1px solid black;}
 			div{display:flex; width:100%; height:100%; align-items:center; justify-content:center;}
 		</style>
-		<script src="gl.js"></script>
-		<script src="framework.js"></script>
 	</head>
 <body>
 	<div><canvas id="glcanvas"></canvas></div>
-	<script src="app.js"></script>
+	<script type="module">
+		import run from './app.js'
+
+		var canvas = document.getElementById("glcanvas")
+		var gl = canvas.getContext("webgl2")
+
+		if (gl) { 
+			run(gl)
+		} else {
+			console.error("WebGL context is not available.")
+		}
+	</script>
 </body>
 </html>
