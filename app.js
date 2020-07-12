@@ -1,3 +1,5 @@
+/// <reference path="webgl.d.ts" />
+
 import ResourceManager from "./lib/resource_manager.js";
 import ShaderLoader from "./lib/shader_loader.js";
 import Program from "./lib/program.js";
@@ -7,6 +9,11 @@ var manager = new ResourceManager({
   point_fragment: "shaders/point.frag",
 });
 
+/**
+ * @param {WebGLRenderingContext} gl - WebGL instance
+ * @param {number} width
+ * @param {number} height
+ */
 function setCanvasSize(gl, width, height) {
   gl.canvas.style.width = width + "px";
   gl.canvas.style.height = height + "px";
@@ -16,6 +23,9 @@ function setCanvasSize(gl, width, height) {
   gl.viewport(0, 0, width, height);
 }
 
+/**
+ * @param {WebGLRenderingContext} gl - WebGL instance
+ */
 export default function run(gl) {
   gl.clearColor(1.0, 1.0, 1.0, 1.0);
   setCanvasSize(gl, 500, 500);
@@ -32,13 +42,9 @@ export default function run(gl) {
       .attachShader(fragmentShader);
 
     var shaderProg = program.compile();
-    // var kernel = new Kernel(gl).useProgram(shaderProg)
 
-    // 4. Get Location of Uniforms and Attributes.
-    // gl.useProgram(shaderProg);
     var aPositionLoc = program.getAttribLocation("a_position"),
       uPointSizeLoc = program.getUniformLocation("uPointSize");
-    // gl.useProgram(null);
 
     //............................................
     //Set Up Data Buffers
