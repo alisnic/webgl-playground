@@ -3,6 +3,7 @@
 import ResourceManager from "./lib/resource_manager.js";
 import ShaderLoader from "./lib/shader_loader.js";
 import Program from "./lib/program.js";
+import Renderer from "./lib/renderer.js";
 
 var manager = new ResourceManager({
   point_vertex: "shaders/point.vert",
@@ -26,13 +27,11 @@ function setCanvasSize(gl, width, height) {
 /**
  * @param {WebGLRenderingContext} gl - WebGL instance
  */
-export default function run(gl) {
+export default function run(gl, tickFn) {
   gl.clearColor(1.0, 1.0, 1.0, 1.0);
   setCanvasSize(gl, 500, 500);
 
   manager.loadAll().then(() => {
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
     var loader = new ShaderLoader(gl);
     var vertexShader = loader.loadVertex(manager.data.point_vertex);
     var fragmentShader = loader.loadFragment(manager.data.point_fragment);
@@ -67,5 +66,15 @@ export default function run(gl) {
     gl.bindBuffer(gl.ARRAY_BUFFER, null); //Done setting up the buffer
 
     gl.drawArrays(gl.POINTS, 0, 2); //Draw the points
+
+    new Renderer({ fps: 30 }).render(() => {
+      console.log("RENDER!");
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      aryVerts[0] = Math.random();
+      aryVerts[1] = Math.random();
+      aryVerts[3] = Math.random();
+      aryVerts[4] = Math.random();
+      gl.drawArrays(gl.POINTS, 0, 2); //Draw the points
+    });
   });
 }

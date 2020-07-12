@@ -18,7 +18,7 @@
 		var gl = canvas.getContext("webgl2")
 
 		if (gl) { 
-			run(gl)
+			run(gl, window.requestAnimationFrame)
 		} else {
 			console.error("WebGL context is not available.")
 		}
