@@ -4,8 +4,6 @@ import ResourceManager from "./lib/resource_manager.js";
 import ShaderLoader from "./lib/shader_loader.js";
 import Program from "./lib/program.js";
 import Renderer from "./lib/renderer.js";
-import Entity from "./lib/entity.js";
-import Mover from "./lib/mover.js";
 
 var manager = new ResourceManager({
   point_vertex: "shaders/point.vert",
@@ -38,38 +36,36 @@ export default function run(gl, tickFn) {
     var vertexShader = loader.loadVertex(manager.data.point_vertex);
     var fragmentShader = loader.loadFragment(manager.data.point_fragment);
 
-    var program = new Program(gl).attachShader(vertexShader).attachShader(fragmentShader);
+    var program = new Program(gl)
+      .uniforms({ uPointSize: "uniform1f", uAngle: "uniform1f" })
+      .attachShader(vertexShader)
+      .attachShader(fragmentShader);
 
     var shaderProg = program.compile();
-
-    var aPositionLoc = program.getAttribLocation("a_position"),
-      uPointSizeLoc = program.getUniformLocation("uPointSize");
-
+    var aPositionLoc = program.getAttribLocation("a_position");
     var aryVerts = new Float32Array([0, 0, 0]);
     var bufVerts = gl.createBuffer();
 
     gl.bindBuffer(gl.ARRAY_BUFFER, bufVerts);
     gl.bufferData(gl.ARRAY_BUFFER, aryVerts, gl.STATIC_DRAW);
     gl.useProgram(shaderProg);
-    gl.uniform1f(uPointSizeLoc, 50.0);
+    program.set("uPointSize", 50.0);
 
     gl.enableVertexAttribArray(aPositionLoc);
     gl.vertexAttribPointer(aPositionLoc, 3, gl.FLOAT, false, 0, 0);
-
-    var uAngle = gl.getUniformLocation(shaderProg, "uAngle");
 
     var gPointSize = 0,
       gPSizeStep = 3,
       gAngle = 0,
       gAngleStep = (Math.PI / 180.0) * 90; //90 degrees in Radians
 
-    new Renderer({ fps: 0 }).render((dt) => {
+    new Renderer({ fps: 30 }).render((dt) => {
       gPointSize += (gPSizeStep * dt) / 1000;
       var size = Math.sin(gPointSize) * 10.0 + 30.0;
-      gl.uniform1f(uPointSizeLoc, size);
+      program.set("uPointSize", size);
 
       gAngle += (gAngleStep * dt) / 1000;
-      gl.uniform1f(uAngle, gAngle);
+      program.set("uAngle", gAngle);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       gl.drawArrays(gl.POINTS, 0, 1);
     });
