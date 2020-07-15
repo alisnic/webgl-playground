@@ -45,42 +45,33 @@ export default function run(gl, tickFn) {
     var aPositionLoc = program.getAttribLocation("a_position"),
       uPointSizeLoc = program.getUniformLocation("uPointSize");
 
-    var square1 = new Entity("square1", { x: Math.random(), y: Math.random() });
-    var square2 = new Entity("square2", { x: Math.random(), y: Math.random() });
-
-    var aryVerts = new Float32Array([
-      square1.data.x,
-      square1.data.y,
-      0,
-      square2.data.x,
-      square2.data.y,
-      0,
-    ]);
-
+    var aryVerts = new Float32Array([0, 0, 0]);
     var bufVerts = gl.createBuffer();
 
     gl.bindBuffer(gl.ARRAY_BUFFER, bufVerts);
     gl.bufferData(gl.ARRAY_BUFFER, aryVerts, gl.STATIC_DRAW);
-
     gl.useProgram(shaderProg);
     gl.uniform1f(uPointSizeLoc, 50.0);
 
     gl.enableVertexAttribArray(aPositionLoc);
     gl.vertexAttribPointer(aPositionLoc, 3, gl.FLOAT, false, 0, 0);
 
-    var mover = new Mover().register(square1).register(square2);
+    var uAngle = gl.getUniformLocation(shaderProg, "uAngle");
 
-    new Renderer({ fps: 30 }).render(() => {
+    var gPointSize = 0,
+      gPSizeStep = 3,
+      gAngle = 0,
+      gAngleStep = (Math.PI / 180.0) * 90; //90 degrees in Radians
+
+    new Renderer({ fps: 0 }).render((dt) => {
+      gPointSize += (gPSizeStep * dt) / 1000;
+      var size = Math.sin(gPointSize) * 10.0 + 30.0;
+      gl.uniform1f(uPointSizeLoc, size);
+
+      gAngle += (gAngleStep * dt) / 1000;
+      gl.uniform1f(uAngle, gAngle);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      mover.commit();
-
-      aryVerts[0] = square1.data.x;
-      aryVerts[1] = square1.data.y;
-      aryVerts[3] = square2.data.x;
-      aryVerts[4] = square2.data.y;
-
-      gl.bufferData(gl.ARRAY_BUFFER, aryVerts, gl.DYNAMIC_DRAW);
-      gl.drawArrays(gl.POINTS, 0, 2);
+      gl.drawArrays(gl.POINTS, 0, 1);
     });
   });
 }
