@@ -1,5 +1,3 @@
-/// <reference path="webgl.d.ts" />
-
 import ResourceManager from "./lib/resource_manager.js";
 import ShaderLoader from "./lib/shader_loader.js";
 import Program from "./lib/program.js";

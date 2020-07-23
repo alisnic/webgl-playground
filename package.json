@@ -8,6 +8,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@types/webgl2": "0.0.5",
     "prettier": "^2.0.5"
   },
   "scripts": {
