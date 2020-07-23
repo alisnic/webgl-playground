@@ -2,6 +2,7 @@ import ResourceManager from "./lib/resource_manager.js";
 import ShaderLoader from "./lib/shader_loader.js";
 import Program from "./lib/program.js";
 import Renderer from "./lib/renderer.js";
+import Kernel from "./lib/kernel.js";
 
 var manager = new ResourceManager({
   point_vertex: "shaders/point.vert",
@@ -37,20 +38,14 @@ export default function run(gl, tickFn) {
     var program = new Program(gl)
       .uniforms({ uPointSize: "uniform1f", uAngle: "uniform1f" })
       .attachShader(vertexShader)
-      .attachShader(fragmentShader);
+      .attachShader(fragmentShader)
+      .activate();
 
-    var shaderProg = program.compile();
-    var aPositionLoc = program.getAttribLocation("a_position");
-    var aryVerts = new Float32Array([0, 0, 0]);
-    var bufVerts = gl.createBuffer();
+    var kernel = new Kernel(gl);
+    kernel.createArrayBuffer([0, 0, 0]);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, bufVerts);
-    gl.bufferData(gl.ARRAY_BUFFER, aryVerts, gl.STATIC_DRAW);
-    gl.useProgram(shaderProg);
     program.set("uPointSize", 50.0);
-
-    gl.enableVertexAttribArray(aPositionLoc);
-    gl.vertexAttribPointer(aPositionLoc, 3, gl.FLOAT, false, 0, 0);
+    program.enableVertexArray("a_position", 3, gl.FLOAT);
 
     var gPointSize = 0,
       gPSizeStep = 3,
@@ -64,8 +59,7 @@ export default function run(gl, tickFn) {
 
       gAngle += (gAngleStep * dt) / 1000;
       program.set("uAngle", gAngle);
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      gl.drawArrays(gl.POINTS, 0, 1);
+      kernel.redraw();
     });
   });
 }
