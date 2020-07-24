@@ -2,7 +2,7 @@ import ResourceManager from "./lib/resource_manager.js";
 import ShaderLoader from "./lib/shader_loader.js";
 import Program from "./lib/program.js";
 import Renderer from "./lib/renderer.js";
-import Kernel from "./lib/kernel.js";
+import GpuBuffer from "./lib/gpu_buffer.js";
 
 var manager = new ResourceManager({
   point_vertex: "shaders/point.vert",
@@ -26,7 +26,7 @@ function setCanvasSize(gl, width, height) {
 /**
  * @param {WebGLRenderingContext} gl - WebGL instance
  */
-export default function run(gl, tickFn) {
+export default function run(gl) {
   gl.clearColor(1.0, 1.0, 1.0, 1.0);
   setCanvasSize(gl, 500, 500);
 
@@ -41,8 +41,9 @@ export default function run(gl, tickFn) {
       .attachShader(fragmentShader)
       .activate();
 
-    var kernel = new Kernel(gl);
-    kernel.createArrayBuffer([0, 0, 0]);
+    var buffer = new GpuBuffer(gl, gl.ARRAY_BUFFER)
+      .activate()
+      .loadData([0, 0, 0], gl.STATIC_DRAW);
 
     program.set("uPointSize", 50.0);
     program.enableVertexArray("a_position", 3, gl.FLOAT);
@@ -59,7 +60,8 @@ export default function run(gl, tickFn) {
 
       gAngle += (gAngleStep * dt) / 1000;
       program.set("uAngle", gAngle);
-      kernel.redraw();
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.drawArrays(gl.POINTS, 0, 1);
     });
   });
 }
