@@ -39,7 +39,7 @@ export default function run(gl) {
     var fragmentShader = loader.loadFragment(manager.data.point_fragment);
 
     var program = new Program(gl)
-      .uniforms({ uColor: "uniform3fv" })
+      .uniforms({ uColor: "uniform3fv", uMVMatrix: "uniformMatrix4fv" })
       .attachShader(vertexShader)
       .attachShader(fragmentShader)
       .activate()
@@ -62,11 +62,26 @@ export default function run(gl) {
         },
       });
 
-    var model = new Model(grid);
+    var model = new Model(grid)
+      .setScale(0.4, 0.4, 0.4)
+      .setRotation(0, 0, 45)
+      .setPosition(0.8, 0.8, 0);
 
-    new Renderer({ fps: 0 }).render((dt) => {
+    new Renderer({ fps: 30 }).render((dt) => {
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      program.renderModel(model);
+
+      var p = model.transform.position, //Just an pointer to transform position, make code smaller
+        angle = Math.atan2(p.y, p.x) + 1 * dt, //Calc the current angle plus 1 degree per second rotation
+        radius = Math.sqrt(p.x * p.x + p.y * p.y), //Calc the distance from origin.
+        scale = Math.max(0.2, Math.abs(Math.sin(angle)) * 1.2); //Just messing with numbers and seeing what happens :)
+
+      program.renderModel(
+        model
+          .setScale(scale, scale / 4, 1)
+          .setPosition(radius * Math.cos(angle), radius * Math.sin(angle), 0)
+          .addRotation(30 * dt, 60 * dt, 15 * dt)
+          .preRender()
+      );
     });
   });
 }
