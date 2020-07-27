@@ -2,7 +2,6 @@ import ResourceManager from "./lib/resource_manager.js";
 import ShaderLoader from "./lib/shader_loader.js";
 import Program from "./lib/program.js";
 import Renderer from "./lib/renderer.js";
-import GpuBuffer from "./lib/gpu_buffer.js";
 import Grid from "./src/grid.js";
 
 var manager = new ResourceManager({
