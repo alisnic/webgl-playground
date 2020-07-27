@@ -3,8 +3,9 @@ import ShaderLoader from "./lib/shader_loader.js";
 import Program from "./lib/program.js";
 import Renderer from "./lib/renderer.js";
 import Grid from "./src/grid.js";
-import { vec4 } from "https://unpkg.com/gl-matrix@3.3.0/esm/index.js";
+// import { vec4 } from "https://unpkg.com/gl-matrix@3.3.0/esm/index.js";
 import Mesh from "./lib/Mesh.js";
+import Model from "./lib/Model.js";
 
 var manager = new ResourceManager({
   point_vertex: "shaders/point.vert",
@@ -44,7 +45,6 @@ export default function run(gl) {
       .activate()
       .set("uColor", [0.8, 0.8, 0.8, 1, 0, 0, 0, 1, 0, 0, 0, 1]);
 
-    // var grid = new Grid(program);
     var grid = new Mesh(program, gl.LINES)
       .setData(Grid.build())
       .setComponentSize(4)
@@ -62,11 +62,11 @@ export default function run(gl) {
         },
       });
 
+    var model = new Model(grid);
+
     new Renderer({ fps: 0 }).render((dt) => {
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      // grid.render();
-      var vertexCount = grid.dataSize / grid.componentSize;
-      gl.drawArrays(gl.LINES, 0, vertexCount);
+      program.renderModel(model);
     });
   });
 }
