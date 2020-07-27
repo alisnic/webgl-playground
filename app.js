@@ -3,6 +3,7 @@ import ShaderLoader from "./lib/shader_loader.js";
 import Program from "./lib/program.js";
 import Renderer from "./lib/renderer.js";
 import Grid from "./src/grid.js";
+import { vec4 } from "https://unpkg.com/gl-matrix@3.3.0/esm/index.js";
 
 var manager = new ResourceManager({
   point_vertex: "shaders/point.vert",
