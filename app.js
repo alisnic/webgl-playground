@@ -21,7 +21,7 @@ function setCanvasSize(gl, width, height) {
  */
 export default function run(gl) {
   gl.clearColor(1.0, 1.0, 1.0, 1.0);
-  setCanvasSize(gl, 500, 500);
+  setCanvasSize(gl, innerWidth, innerHeight);
 
   var shader = new GridShader(gl);
 
