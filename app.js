@@ -1,6 +1,8 @@
 import Renderer from "./lib/renderer.js";
 import Grid from "./src/grid.js";
 import GridShader from "./src/GridShader.js";
+import Camera from "./lib/Camera.js";
+import CameraController from "./lib/CameraController.js";
 
 /**
  * @param {WebGLRenderingContext} gl - WebGL instance
@@ -23,27 +25,21 @@ export default function run(gl) {
   gl.clearColor(1.0, 1.0, 1.0, 1.0);
   setCanvasSize(gl, innerWidth, innerHeight);
 
-  var shader = new GridShader(gl);
+  var gCamera = new Camera(gl);
+  gCamera.transform.position.set(0, 1, 3);
+  var gCameraCtrl = new CameraController(gl, gCamera);
 
-  var model = Grid.buildModel(shader)
-    .setScale(0.4, 0.4, 0.4)
-    .setRotation(0, 0, 45)
-    .setPosition(0.8, 0.8, 0);
+  //Setup Grid
+  var gGridShader = new GridShader(gl, gCamera.projectionMatrix);
+  var gGridModal = Grid.buildModel(gGridShader, true);
 
   new Renderer({ fps: 30 }).render((dt) => {
+    gCamera.updateViewMatrix();
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    var p = model.transform.position, //Just an pointer to transform position, make code smaller
-      angle = Math.atan2(p.y, p.x) + 1 * dt, //Calc the current angle plus 1 degree per second rotation
-      radius = Math.sqrt(p.x * p.x + p.y * p.y), //Calc the distance from origin.
-      scale = Math.max(0.2, Math.abs(Math.sin(angle)) * 1.2); //Just messing with numbers and seeing what happens :)
-
-    shader.renderModel(
-      model
-        .setScale(scale, scale / 4, 1)
-        .setPosition(radius * Math.cos(angle), radius * Math.sin(angle), 0)
-        .addRotation(30 * dt, 60 * dt, 15 * dt)
-        .preRender()
-    );
+    gGridShader
+      .activate()
+      .setCameraMatrix(gCamera.viewMatrix)
+      .renderModel(gGridModal.preRender());
   });
 }
