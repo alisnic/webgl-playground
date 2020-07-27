@@ -2,9 +2,9 @@ import Mesh from "../lib/Mesh.js";
 import Model from "../lib/Model.js";
 
 export default class Grid {
-  static buildModel(program) {
+  static buildModel(program, incAxis) {
     var grid = new Mesh(program, program.gl.LINES)
-      .setData(Grid.build())
+      .setData(Grid.build(incAxis))
       .setComponentSize(4)
       .enableAttributes({
         a_position: {
@@ -23,7 +23,7 @@ export default class Grid {
     return new Model(grid);
   }
 
-  static build() {
+  static build(incAxis) {
     var verts = [],
       size = 1.8, // W/H of the outer box of the grid, from origin we can only go 1 unit in each direction, so from left to right is 2 units max
       div = 10.0, // How to divide up the grid
@@ -57,26 +57,40 @@ export default class Grid {
       verts.push(1); //c2
     }
 
-    //TODO : Remove the following, its only to demo extra lines can be thrown in.
-    verts.push(-half); //x1
-    verts.push(-half); //y1
-    verts.push(0); //z1
-    verts.push(2); //c2
+    if (incAxis) {
+      //x axis
+      verts.push(-1.1); //x1
+      verts.push(0); //y1
+      verts.push(0); //z1
+      verts.push(1); //c2
 
-    verts.push(half); //x2
-    verts.push(half); //y2
-    verts.push(0); //z2
-    verts.push(2); //c2
+      verts.push(1.1); //x2
+      verts.push(0); //y2
+      verts.push(0); //z2
+      verts.push(1); //c2
 
-    verts.push(-half); //x1
-    verts.push(half); //y1
-    verts.push(0); //z1
-    verts.push(3); //c2
+      //y axis
+      verts.push(0); //x1
+      verts.push(-1.1); //y1
+      verts.push(0); //z1
+      verts.push(2); //c2
 
-    verts.push(half); //x2
-    verts.push(-half); //y2
-    verts.push(0); //z2
-    verts.push(3); //c2
+      verts.push(0); //x2
+      verts.push(1.1); //y2
+      verts.push(0); //z2
+      verts.push(2); //c2
+
+      //z axis
+      verts.push(0); //x1
+      verts.push(0); //y1
+      verts.push(-1.1); //z1
+      verts.push(3); //c2
+
+      verts.push(0); //x2
+      verts.push(0); //y2
+      verts.push(1.1); //z2
+      verts.push(3); //c2
+    }
 
     return verts;
   }

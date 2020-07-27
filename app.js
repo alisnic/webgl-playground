@@ -33,7 +33,7 @@ export default function run(gl) {
   var gGridShader = new GridShader(gl, gCamera.projectionMatrix);
   var gGridModal = Grid.buildModel(gGridShader, true);
 
-  new Renderer({ fps: 30 }).render((dt) => {
+  new Renderer({ fps: 60 }).render((dt) => {
     gCamera.updateViewMatrix();
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
