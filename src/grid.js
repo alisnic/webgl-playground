@@ -1,4 +1,28 @@
+import Mesh from "../lib/Mesh.js";
+import Model from "../lib/Model.js";
+
 export default class Grid {
+  static buildModel(program) {
+    var grid = new Mesh(program, program.gl.LINES)
+      .setData(Grid.build())
+      .setComponentSize(4)
+      .enableAttributes({
+        a_position: {
+          size: 3,
+          type: "FLOAT",
+          stride: Float32Array.BYTES_PER_ELEMENT * 4,
+        },
+        a_color: {
+          size: 1,
+          type: "FLOAT",
+          stride: Float32Array.BYTES_PER_ELEMENT * 4,
+          offset: Float32Array.BYTES_PER_ELEMENT * 3,
+        },
+      });
+
+    return new Model(grid);
+  }
+
   static build() {
     var verts = [],
       size = 1.8, // W/H of the outer box of the grid, from origin we can only go 1 unit in each direction, so from left to right is 2 units max
