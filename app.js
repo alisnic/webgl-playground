@@ -43,7 +43,10 @@ export default function run(gl) {
 
     var buffer = new GpuBuffer(gl, gl.ARRAY_BUFFER)
       .activate()
-      .loadData([0, 0, 0], gl.STATIC_DRAW);
+      .loadData(
+        [0, 0, 0, 0.1, 0.1, 0, 0.1, -0.1, 0, -0.1, -0.1, 0, -0.1, 0.1, 0],
+        gl.STATIC_DRAW
+      );
 
     program.set("uPointSize", 50.0);
     program.enableVertexArray("a_position", 3, gl.FLOAT);
@@ -53,7 +56,7 @@ export default function run(gl) {
       gAngle = 0,
       gAngleStep = (Math.PI / 180.0) * 90; //90 degrees in Radians
 
-    new Renderer({ fps: 30 }).render((dt) => {
+    new Renderer({ fps: 60 }).render((dt) => {
       gPointSize += (gPSizeStep * dt) / 1000;
       var size = Math.sin(gPointSize) * 10.0 + 30.0;
       program.set("uPointSize", size);
@@ -61,7 +64,7 @@ export default function run(gl) {
       gAngle += (gAngleStep * dt) / 1000;
       program.set("uAngle", gAngle);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      gl.drawArrays(gl.POINTS, 0, 1);
+      gl.drawArrays(gl.POINTS, 0, 5);
     });
   });
 }
