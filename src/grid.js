@@ -4,23 +4,18 @@ import Model from "../lib/Model.js";
 export default class Grid {
   static buildModel(program, incAxis) {
     var grid = new Mesh(program, program.gl.LINES)
-      .setData(Grid.build(incAxis))
-      .setComponentSize(4)
-      .enableAttributes({
-        a_position: {
-          size: 3,
-          type: "FLOAT",
-          stride: Float32Array.BYTES_PER_ELEMENT * 4,
-        },
-        a_color: {
-          size: 1,
-          type: "FLOAT",
-          stride: Float32Array.BYTES_PER_ELEMENT * 4,
-          offset: Float32Array.BYTES_PER_ELEMENT * 3,
-        },
+      .addVerts(Grid.build(incAxis), {
+        componentSize: 4,
+        positionStride: Float32Array.BYTES_PER_ELEMENT * 4,
+      })
+      .bindAttribute("a_color", {
+        size: 1,
+        type: program.gl.FLOAT,
+        stride: Float32Array.BYTES_PER_ELEMENT * 4,
+        offset: Float32Array.BYTES_PER_ELEMENT * 3,
       });
 
-    return new Model(grid);
+    return new Model(grid, program.gl.LINES);
   }
 
   static build(incAxis) {
