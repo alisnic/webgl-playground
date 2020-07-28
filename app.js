@@ -6,11 +6,14 @@ import CameraController from "./lib/CameraController.js";
 import Platform from "./lib/Platform.js";
 import Quad from "./src/Quad.js";
 import QuadShader from "./src/QuadShader.js";
+import Texture from "./lib/Texture.js";
+import TextureShader from "./src/TextureShader.js";
 
 /**
  * @param {WebGLRenderingContext} gl - WebGL instance
  */
 export default function run(gl) {
+  console.log("stuff is loading yo");
   gl.cullFace(gl.BACK); //Back is also default
   gl.frontFace(gl.CCW); //Dont really need to set it, its ccw by default.
   gl.enable(gl.DEPTH_TEST); //Shouldn't use this, use something else to add depth detection
@@ -25,12 +28,19 @@ export default function run(gl) {
   gCamera.transform.position.set(0, 1, 3);
   var gCameraCtrl = new CameraController(gl, gCamera);
 
+  var texture = Texture.loadFromImageTag(
+    gl,
+    document.getElementById("texture")
+  );
+
+  console.log(texture);
+
   //Setup Grid
   var gGridShader = new GridShader(gl, gCamera.projectionMatrix);
   var gGridModal = Grid.buildModel(gGridShader, true);
 
-  var gShader = new QuadShader(gl, gCamera.projectionMatrix);
-  var gModal = Quad.buildModel(gShader);
+  var gShader = new TextureShader(gl, gCamera.projectionMatrix);
+  var gModal = Quad.buildModel(gShader).setPosition(0, 0.6, 0);
 
   new Renderer({ fps: 60 }).render((dt) => {
     gCamera.updateViewMatrix();
@@ -43,6 +53,7 @@ export default function run(gl) {
 
     gShader
       .activate()
+      .useTexture(texture)
       .setCameraMatrix(gCamera.viewMatrix)
       .renderModel(gModal.preRender());
   });
