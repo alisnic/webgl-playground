@@ -1,7 +1,7 @@
 import Shader from "../lib/Shader.js";
 import Util from "../lib/Util.js";
 
-export default class TextureShader extends Shader {
+export default class CubeShader extends Shader {
   static VERTEX_SRC = `#version 300 es
     #pragma vscode_glsllint_stage : vert
 		in vec4 a_position;	//Making it a vec4, the w component is used as color index from uColor
