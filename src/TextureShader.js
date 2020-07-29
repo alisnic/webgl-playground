@@ -50,15 +50,14 @@ export default class TextureShader extends Shader {
   }
 
   useTexture(glTexture) {
+    if (!glTexture) {
+      throw new Error("texture is null!");
+    }
+
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, glTexture);
     this.set("uMainTex", 0);
     return this;
-  }
-
-  renderModel(model) {
-    this.set("uMVMatrix", false, model.transform.getViewMatrix());
-    super.renderModel(model);
   }
 
   setPerspective(matData) {

@@ -29,22 +29,16 @@ export default function run(gl) {
   var gGridModal = Grid.buildModel(gGridShader, true);
 
   var gShader = new TextureShader(gl, gCamera.projectionMatrix);
-  var gModal = Quad.buildModel(gShader).setPosition(0, 0.6, 0);
+  var gModal = Quad.buildModel(gShader)
+    .setPosition(0, 0.6, 0)
+    .setTexture(texture);
 
-  var renderer = new Renderer(gl, { fps: 60 });
+  var renderer = new Renderer(gl, { camera: gCamera, fps: 60 });
   renderer.init(gl).onEachFrame((dt) => {
     gCamera.updateViewMatrix();
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    gGridShader
-      .activate()
-      .setCameraMatrix(gCamera.viewMatrix)
-      .renderModel(gGridModal.preRender());
-
-    gShader
-      .activate()
-      .useTexture(texture)
-      .setCameraMatrix(gCamera.viewMatrix)
-      .renderModel(gModal.preRender());
+    renderer.render(gGridShader, gGridModal);
+    renderer.render(gShader, gModal);
   });
 }
