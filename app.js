@@ -4,15 +4,14 @@ import GridShader from "./src/GridShader.js";
 import Camera from "./lib/Camera.js";
 import CameraController from "./lib/CameraController.js";
 import Platform from "./lib/Platform.js";
-import Quad from "./src/Quad.js";
-import QuadShader from "./src/QuadShader.js";
 import Texture from "./lib/Texture.js";
-import TextureShader from "./src/TextureShader.js";
+import Cube from "./src/Cube.js";
+import CubeShader from "./src/CubeShader.js";
 
 /**
  * @param {WebGLRenderingContext} gl - WebGL instance
  */
-export default function run(gl) {
+export default function run(gl, debug) {
   Platform.setCanvasSize(gl, innerWidth, innerHeight);
 
   var gCamera = new Camera(gl);
@@ -26,14 +25,16 @@ export default function run(gl) {
 
   //Setup Grid
   var gGridShader = new GridShader(gl, gCamera.projectionMatrix);
-  var gGridModal = Grid.buildModel(gGridShader, true);
+  var gGridModal = Grid.buildModel(gGridShader, false);
 
-  var gShader = new TextureShader(gl, gCamera.projectionMatrix);
-  var gModal = Quad.buildModel(gShader)
-    .setPosition(0, 0.6, 0)
-    .setTexture(texture);
+  var gShader = new CubeShader(gl, gCamera.projectionMatrix);
+  var gModal = Cube.buildModel(gShader);
 
-  var renderer = new Renderer(gl, { camera: gCamera, fps: 60 });
+  gModal.setPosition(0, 0.6, 0);
+  gModal.setTexture(texture);
+
+  var fps = debug ? 0 : 60;
+  var renderer = new Renderer(gl, { camera: gCamera, fps: fps });
   renderer.init(gl).onEachFrame((dt) => {
     gCamera.updateViewMatrix();
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);

@@ -47,7 +47,7 @@
 
 		if (gl) { 
 			window.addEventListener("load", ()=> {
-				run(gl)
+				run(gl, location.search == "?debug")
 			})
 		} else {
 			console.error("WebGL context is not available.")
