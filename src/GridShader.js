@@ -47,19 +47,4 @@ export default class GridShader extends Shader {
     this.set("uColor", [0.8, 0.8, 0.8, 1, 0, 0, 0, 1, 0, 0, 0, 1]);
     this.setPerspective(projectionMatrix);
   }
-
-  renderModel(model) {
-    this.set("uMVMatrix", false, model.transform.getViewMatrix());
-    super.renderModel(model);
-  }
-
-  setPerspective(matData) {
-    this.set("uPMatrix", false, matData);
-    return this;
-  }
-
-  setCameraMatrix(matData) {
-    this.set("uCameraMatrix", false, matData);
-    return this;
-  }
 }
