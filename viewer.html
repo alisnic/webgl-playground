@@ -11,12 +11,39 @@
 	</head>
 <body>
 	<img src="data/uv_grid.jpg" style="display: none;" id="texture" />
+	<script src="lib/webgl-debug.js"></script>
 	<div><canvas id="glcanvas"></canvas></div>
 	<script type="module">
 		import run from './app.js'
 
 		var canvas = document.getElementById("glcanvas")
 		var gl = canvas.getContext("webgl2")
+
+		if (location.search == "?debug") {
+			function logGLCall(functionName, args) {   
+				console.log("gl." + functionName + "(" + 
+						WebGLDebugUtils.glFunctionArgsToString(functionName, args) + ")");   
+			} 
+
+			function validateNoneOfTheArgsAreUndefined(functionName, args) {
+				for (var ii = 0; ii < args.length; ++ii) {
+					if (args[ii] === undefined) {
+						console.error("undefined passed to gl." + functionName + "(" +
+													WebGLDebugUtils.glFunctionArgsToString(functionName, args) + ")");
+					}
+				}
+			}
+
+			function throwOnGLError(err, funcName, args) {
+				throw WebGLDebugUtils.glEnumToString(err) + " was caused by call to: " + funcName;
+			}
+
+			function logAndValidate(functionName, args) {
+				logGLCall(functionName, args);
+				validateNoneOfTheArgsAreUndefined(functionName, args);
+			}
+			gl = WebGLDebugUtils.makeDebugContext(gl, throwOnGLError, logAndValidate)
+		}
 
 		if (gl) { 
 			window.addEventListener("load", ()=> {
