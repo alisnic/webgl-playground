@@ -31,8 +31,8 @@ export default function run(gl) {
   var gShader = new TextureShader(gl, gCamera.projectionMatrix);
   var gModal = Quad.buildModel(gShader).setPosition(0, 0.6, 0);
 
-  var renderer = new Renderer({ fps: 60 });
-  renderer.init(gl).render((dt) => {
+  var renderer = new Renderer(gl, { fps: 60 });
+  renderer.init(gl).onEachFrame((dt) => {
     gCamera.updateViewMatrix();
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
