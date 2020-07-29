@@ -1,5 +1,4 @@
 import Shader from "../lib/Shader.js";
-import ShaderLoader from "../lib/shader_loader.js";
 
 export default class QuadShader extends Shader {
   static VERTEX_SRC = `#version 300 es
@@ -46,17 +45,11 @@ export default class QuadShader extends Shader {
   constructor(gl, projectionMatrix) {
     super(gl);
 
-    var loader = new ShaderLoader(gl);
-    var vertexShader = loader.loadVertex(QuadShader.VERTEX_SRC);
-    var fragmentShader = loader.loadFragment(QuadShader.FRAGMENT_SRC);
-
     this.uniforms({
       uMVMatrix: "uniformMatrix4fv",
       uCameraMatrix: "uniformMatrix4fv",
       uPMatrix: "uniformMatrix4fv",
     });
-    this.attachShader(vertexShader);
-    this.attachShader(fragmentShader);
     this.activate();
     this.setPerspective(projectionMatrix);
   }

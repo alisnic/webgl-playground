@@ -1,5 +1,4 @@
 import Shader from "../lib/Shader.js";
-import ShaderLoader from "../lib/shader_loader.js";
 
 export default class GridShader extends Shader {
   static VERTEX_SRC = `#version 300 es
@@ -31,18 +30,12 @@ export default class GridShader extends Shader {
   constructor(gl, projectionMatrix) {
     super(gl);
 
-    var loader = new ShaderLoader(gl);
-    var vertexShader = loader.loadVertex(GridShader.VERTEX_SRC);
-    var fragmentShader = loader.loadFragment(GridShader.FRAGMENT_SRC);
-
     this.uniforms({
       uColor: "uniform3fv",
       uMVMatrix: "uniformMatrix4fv",
       uCameraMatrix: "uniformMatrix4fv",
       uPMatrix: "uniformMatrix4fv",
     });
-    this.attachShader(vertexShader);
-    this.attachShader(fragmentShader);
     this.activate();
     this.set("uColor", [0.8, 0.8, 0.8, 1, 0, 0, 0, 1, 0, 0, 0, 1]);
     this.setPerspective(projectionMatrix);
