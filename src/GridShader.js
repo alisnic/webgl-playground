@@ -38,6 +38,6 @@ export default class GridShader extends Shader {
     });
     this.activate();
     this.set("uColor", [0.8, 0.8, 0.8, 1, 0, 0, 0, 1, 0, 0, 0, 1]);
-    this.setPerspective(projectionMatrix);
+    this.set("uPMatrix", false, projectionMatrix);
   }
 }

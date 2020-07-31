@@ -75,6 +75,6 @@ export default class CubeShader extends Shader {
         )
       )
     );
-    this.setPerspective(projectionMatrix);
+    this.set("uPMatrix", false, projectionMatrix);
   }
 }
