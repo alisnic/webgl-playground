@@ -2,14 +2,19 @@ import Mesh from "../lib/Mesh.js";
 import Model from "../lib/Model.js";
 
 export default class Cube {
-  static buildModel(program) {
-    var meshData = this.buildMeshData(1, 1, 1, 0, 0, 0);
+  static buildModel(program, options = {}) {
+    var size = options.size || 1;
+    var addUvs = options.uvs === undefined ? true : options.uvs;
+    var addNormals = options.normals === undefined ? true : options.normals;
+
+    var meshData = this.buildMeshData(size, size, size, 0, 0, 0);
 
     var mesh = new Mesh(program)
       .addVerts(meshData.verts, { componentSize: 4 })
-      .addIndices(meshData.indices)
-      .addUVs(meshData.uvs)
-      .addNormals(meshData.norms);
+      .addIndices(meshData.indices);
+
+    if (addUvs) mesh.addUVs(meshData.uvs);
+    if (addNormals) mesh.addNormals(meshData.norms);
 
     return new Model(mesh, program.gl.TRIANGLES).setCulling(false);
   }
