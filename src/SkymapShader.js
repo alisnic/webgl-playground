@@ -49,6 +49,11 @@ export default class SkymapShader extends Shader {
       uNightTex: "uniform1i",
     });
 
+    this.textureTypes({
+      uDayTex: gl.TEXTURE_CUBE_MAP,
+      uNightTex: gl.TEXTURE_CUBE_MAP,
+    });
+
     this.activate();
     this.set("uPMatrix", false, projectionMatrix);
   }

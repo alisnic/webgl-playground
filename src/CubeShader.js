@@ -60,6 +60,7 @@ export default class CubeShader extends Shader {
       uTime: "uniform1f",
     });
 
+    this.textureTypes({ uMainTex: gl.TEXTURE_2D });
     this.activate();
 
     this.set(

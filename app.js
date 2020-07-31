@@ -30,7 +30,7 @@ export default function run(gl, debug) {
 
   var gShader = new CubeShader(gl, gCamera.projectionMatrix);
   var gModal = Cube.buildModel(gShader);
-  gShader.addTexture("uMainTex", texture, gl.TEXTURE_2D);
+  gShader.setTextures({ uMainTex: texture });
   gModal.setPosition(0, 0.6, 0);
 
   var skybox1 = Texture.loadCubeMap(gl, [
@@ -52,8 +52,10 @@ export default function run(gl, debug) {
   ]);
 
   var gSkyMapShader = new SkymapShader(gl, gCamera.projectionMatrix);
-  gSkyMapShader.addTexture("uDayTex", skybox1, gl.TEXTURE_CUBE_MAP);
-  gSkyMapShader.addTexture("uNightTex", skybox2, gl.TEXTURE_CUBE_MAP);
+  gSkyMapShader.setTextures({
+    uDayTex: skybox1,
+    uNightTex: skybox2,
+  });
 
   var gSkymap = Cube.buildModel(gSkyMapShader, {
     size: 10,
